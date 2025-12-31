@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2013 Stefan Simroth <stefan.simroth@gmail.com>. All Rights Reserved.
@@ -53,7 +53,7 @@ def password_data(element, path=''):
     password = get_value(element.findall('String'), 'Password')
     if password is not None: data = password + "\n"
     else:
-        print "[WARN] No password: %s" % path_for(element, path)
+        print("[WARN] No password: %s" % path_for(element, path))
     
     for field in ['UserName', 'URL', 'Notes']:
         value = get_value(element, field)
@@ -63,8 +63,8 @@ def password_data(element, path=''):
 
 def import_entry(entries, element, path=''):
     element_path = path_for(element, path) 
-    if entries.has_key(element_path):
-        print "[INFO] Duplicate needs merging: %s" % element_path
+    if element_path in entries:
+        print("[INFO] Duplicate needs merging: %s" % element_path)
         existing_data = entries[element_path]
         data = "%s---------\nPassword: %s" % (existing_data, password_data(element))
     else:
@@ -83,8 +83,8 @@ def import_group(entries, element, path='', npath=None):
 
 def import_passwords(xml_file, root_path=None):
     """ Parse given Keepass2 XML file and import password groups from it """
-    print "[>>>>] Importing passwords from file %s" % xml_file
-    print "[INFO] Root path: %s" % root_path
+    print("[>>>>] Importing passwords from file %s" % xml_file)
+    print("[INFO] Root path: %s" % root_path)
     entries = dict()
     with open(xml_file) as xml:
         text = xml.read()
@@ -93,27 +93,27 @@ def import_passwords(xml_file, root_path=None):
         root_group = root.find('Group')
         import_group(entries, root_group, '', root_path)
         password_count = 0
-        for path, data in sorted(entries.iteritems()):
+        for (path, data) in sorted(entries.items()):
             sys.stdout.write("[>>>>] Importing %s ... " % path.encode("utf-8"))
             pass_import_entry(path, data)
             sys.stdout.write("OK\n")
             password_count += 1
             
-        print "[ OK ] Done. Imported %i passwords." % password_count
+        print("[ OK ] Done. Imported %i passwords." % password_count)
 
 
 def usage():
     """ Print usage """
-    print "Usage: %s -f XML_FILE" % (sys.argv[0])
-    print "Optional:"
-    print " -r ROOT_PATH    Different root path to use than the one in xml file, use \"\" for none"
+    print("Usage: %s -f XML_FILE" % (sys.argv[0]))
+    print("Optional:")
+    print(" -r ROOT_PATH    Different root path to use than the one in xml file, use \"\" for none")
 
 
 def main(argv):
     try:
         opts, args = getopt.gnu_getopt(argv, "f:r:")
     except getopt.GetoptError as err:
-        print str(err)
+        print(str(err))
         usage()
         sys.exit(2)
     
